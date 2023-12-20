@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,7 +8,9 @@ plugins {
 android {
     namespace = "com.example.parstagram_k"
     compileSdk = 34
-
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "com.example.parstagram_k"
         minSdk = 24
@@ -15,7 +19,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val apikeyPropertiesFile = rootProject.file("apikey.properties")
+        val apikeyProperties =  Properties()
+        apikeyProperties.load(apikeyPropertiesFile.inputStream())
+
+        buildConfigField("String", "APP_ID", apikeyProperties["APP_ID"].toString())
+        buildConfigField("String", "CLIENT_KEY", apikeyProperties["CLIENT_KEY"].toString())
     }
+
 
     buildTypes {
         release {
@@ -46,5 +57,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation( "com.github.parse-community.Parse-SDK-Android:parse:4.2.1")
+
 
 }
